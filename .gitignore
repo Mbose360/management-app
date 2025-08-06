@@ -1,0 +1,11 @@
+# Virtual environment
+venv/
+# SQLite database
+db.sqlite3
+# Media files (images)
+media/
+# Python cache
+__pycache__/
+*.pyc
+# Other
+*.log
