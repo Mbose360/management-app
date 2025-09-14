@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.db import transaction
 from .models import Reservation, ReservationProduct, RequestedProduct, Product
-from .serializers import RequestedProductSerializer, ReservationSerializer,RequestedProduct2Serializer
+from .serializers import RequestedProductSerializer, ReservationSerializer
 
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()

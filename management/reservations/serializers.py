@@ -4,6 +4,7 @@ from inventory.serializers import ProductSerializer
 from .models import Reservation, ReservationProduct, RequestedProduct
 from clients.models import Client
 from inventory.models import Product
+from datetime import date
 
 class ReservationProductSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.Product_name', read_only=True)
@@ -29,10 +30,6 @@ class RequestedProductSerializer(serializers.ModelSerializer):
         model = RequestedProduct
         fields = ['name', 'requested_quantity', 'suggested_price']
 
-    def validate(self, data):
-        if data.get('suggested_price') is None:
-            raise serializers.ValidationError("Suggested price is required for requested products.")
-        return data
 
 class ReservationSerializer(serializers.ModelSerializer):
     items = ReservationProductSerializer(many=True, required=False)
@@ -47,8 +44,11 @@ class ReservationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         products = self.context['request'].data.get('items', [])
         requested_products = self.context['request'].data.get('requested_products', [])
+        reservation_date = data.get('reservation_date')
         if not products and not requested_products:
             raise serializers.ValidationError("At least one product or requested product is required.")
+        if reservation_date and reservation_date < date.today():
+            raise serializers.ValidationError("the date cannot be in th past ")
         return data
 
     def create(self, validated_data):
@@ -74,3 +74,12 @@ class ReservationSerializer(serializers.ModelSerializer):
         return reservation
     
 
+class RequestedProduct2Serializer(serializers.ModelSerializer):
+        class Meta:
+         model = RequestedProduct
+         fields = ['id','name', 'requested_quantity', 'suggested_price']
+
+        def validate(self, data):
+         if data.get('suggested_price') is None:
+             raise serializers.ValidationError('please enter a sugested price')
+         return data
